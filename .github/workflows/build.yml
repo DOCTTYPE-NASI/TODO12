@@ -1,0 +1,45 @@
+name: APK bauen
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.14.3'
+
+      - name: APK bauen
+        run: gradle assembleRelease --no-daemon --stacktrace
+
+      - name: APK umbenennen
+        run: cp app/build/outputs/apk/release/app-release.apk Organizer.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Organizer-APK
+          path: Organizer.apk
+
+      - name: Release mit APK erstellen
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="v1.0.${{ github.run_number }}"
+          gh release create "$TAG" Organizer.apk \
+            --title "Organizer $TAG" \
+            --notes "Lade **Organizer.apk** auf dein Handy und installiere sie. Neue Versionen lassen sich einfach drüber installieren, deine Aufgaben bleiben erhalten." \
+            --latest

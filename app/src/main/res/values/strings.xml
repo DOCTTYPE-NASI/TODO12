@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Organizer</string>
+    <string name="widget_name">To-Do</string>
+    <string name="widget_desc">Deine wichtigsten offenen Aufgaben. Kreis tippen hakt ab, Aufgabe tippen öffnet sie.</string>
+</resources>
